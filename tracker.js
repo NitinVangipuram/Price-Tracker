@@ -142,8 +142,8 @@ cron.schedule("*/5 * * * *", async () => {
             console.log(`Price not found on ${name}`);
             continue; // Skip this product if price not found
           }
-  
-          const newPrice = Number(gotThePrice.replace(/[^\d.]/g, ""));  // Replace with your logic to get the new price
+          // Number(gotThePrice.replace(/[^\d.]/g, ""))
+          const newPrice =100 ;  // Replace with your logic to get the new price
           console.log(`Fetched updated price for ${name}: ${newPrice}`);
   
           if (newPrice < dbData.products[i].price) {

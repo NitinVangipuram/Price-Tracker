@@ -50,7 +50,7 @@ function App() {
   return (
     <div >
     <div className='imp'>
-      <h1>Price Tracker</h1>
+      {/* <h1>Price Tracker</h1> */}
       <AddProduct onAddProduct={addProduct} />
       </div>
       <ProductList products={products} productData={productData} />

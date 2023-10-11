@@ -1,53 +1,9 @@
-// import React from 'react';
-// import Swal from "sweetalert2";
-// function ProductList({ products, productData }) {
-//   const deleteProduct = (id) => {
-//     Swal.fire({
-//       title: 'Are you sure?',
-//       text: "You won't be able to revert this!",
-//       icon: 'warning',
-//       showCancelButton: true,
-//       confirmButtonColor: '#3085d6',
-//       cancelButtonColor: '#d33',
-//       confirmButtonText: 'Yes, delete it!'
-//     }).then((result) => {
-//       if (result.isConfirmed) {
-//         Swal.fire(
-//           'Deleted!',
-//           'Your file has been deleted.',
-//           'success'
-//         )
-
-
-//       }
-//     })}
-    
-//   return (
-//     <div className='product-list'>
-//       <h2>Product Data</h2>
-//       <ul>
-//         {Object.entries(productData).map(([url, data]) => (
-//           <li key={url}>
-//             <strong>Product Name:</strong> {data.name},{' '}
-//             <strong>Desired Price:</strong> {data.desiredPrice},{' '}
-//             <strong>Price:</strong> {data.price}
-//             <br />
-//             <img src={data.image} alt={data.name} />
-//             <button onClick={deleteProduct(data.id)}>Delete</button>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
-
-// export default ProductList;
-
 
 
 import React from 'react';
 import Swal from 'sweetalert2';
-
+// import Card from 'react-bootstrap/Card';
+import './ProductList.css';
 function ProductList({ products, productData, setProductData }) {
   const API_Url ='http://localhost:3500/products';
   const deleteProduct = (id) => {
@@ -74,26 +30,45 @@ function ProductList({ products, productData, setProductData }) {
 
   return (
     <div className="product-list">
-      <h2>Product Data</h2>
-      <ul>
-        {Object.entries(productData).map(([url, data]) => (
-          <li key={url}>
-          <div className='card'>
-            <div className='left-card'>
-            <label>{data.name.slice(0,15)}</label>
-            <label> your price :{data.desiredPrice}</label> 
-            <label>current price:{data.price}</label> 
-            <button onClick={() => deleteProduct(data.id)}>Delete</button>
-            <br />
-            </div>
-            <div className='right-card'>
-            
-            <img src={data.image} alt={data.name} />
-           </div>
-           </div>
-          </li>
-        ))}
+      {/* <h2>Product Data</h2> */}
+      <header className="container">
+      <h1>Shopping Cart</h1>
+
+      <ul className="breadcrumb">
+        <li>Your Items</li>
       </ul>
+
+      <span className="count"> </span>
+    </header>
+      
+        {Object.entries(productData).map(([url, data]) => (
+          <section className='container'>
+          <ul className="products">
+          <li  className="row" key={url}>
+           <div className="col left">
+                <div className="thumbnail">
+                  <a href="/">
+                    <img src={data.image} alt={data.name} />
+                  </a>
+                </div>
+                <div className="detail">
+                  <div className="name">
+                    <a href="/">{data.name.slice(0,15)}</a>
+                  </div>
+                  <div className="description">{data.name}</div>
+                  <div className="price">{data.price}</div>
+                </div>
+              </div>
+
+              <div className="col right">
+              <button  className="todo-btn" onClick={() => deleteProduct(data.id)}>Delete</button>
+              </div>
+
+          </li>
+          </ul>
+          </section>
+        ))}
+      
     </div>
   );
 }

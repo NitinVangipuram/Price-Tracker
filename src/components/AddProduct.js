@@ -40,26 +40,28 @@ const AddProduct = ({ onAddProduct }) => {
       <form onSubmit={handleSubmit}>
      
         <label className="custom-field two">
-        <span class="placeholder">Enter URL : </span>
+        {/* <span class="placeholder">Enter URL : </span> */}
           <input
             type="url"
-           
+            className="todo-input"
+            placeholder="Enter URL"
             value={productUrl}
             onChange={(e) => setProductUrl(e.target.value)}
           />
         
         </label>
         <label className="custom-field two">
-        <span class="placeholder">Desired price:   </span>
+        {/* <span class="placeholder">Desired price:   </span> */}
           <input
             type="number"
             value={desiredPrice}
-           
+            placeholder='Desired price'
+           className='todo-input'
             onChange={(e) => setDesiredPrice(e.target.value)}
           />
           
         </label>
-        <button className="b" type="submit">Add</button>
+        <button className="todo-btn" type="submit">Add</button>
       </form>
       
     </div>
