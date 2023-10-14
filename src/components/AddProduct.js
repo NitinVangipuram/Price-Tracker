@@ -26,14 +26,7 @@ console.log(product);
       if (data) {
         setProductData({ ...productData, [product.productUrl]: data, });
         setProducts([...products, product]);
-        // fetch(API_Url, {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify(data),
-        // })
-        
+      
       }
     } catch (error) {
       console.error("Error sending product data:", error);

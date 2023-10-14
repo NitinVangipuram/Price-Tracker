@@ -12,28 +12,6 @@ mongoose.connect('mongodb+srv://dharhacks:KfYYaWCNDC7ZCqaF@cluster0.kwhiyso.mong
 var fs = require('fs');
 var product = require("./model/product.js");
 var user = require("./model/user.js");
-// var dir = './uploads';
-// var upload = multer({
-//   storage: multer.diskStorage({
-
-//     destination: function (req, file, callback) {
-//       if (!fs.existsSync(dir)) {
-//         fs.mkdirSync(dir);
-//       }
-//       callback(null, './uploads');
-//     },
-//     filename: function (req, file, callback) { callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname)); }
-
-//   }),
-
-//   fileFilter: function (req, file, callback) {
-//     var ext = path.extname(file.originalname)
-//     if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-//       return callback(/*res.end('Only images are allowed')*/ null, false)
-//     }
-//     callback(null, true)
-//   }
-// });
 app.use(cors());
 app.use(express.static('uploads'));
 app.use(bodyParser.json());       // to support JSON-encoded bodies
@@ -221,12 +199,7 @@ app.post("/add-product",async(req, res) => {
         status: false
       });
     }
-  //  catch (e) {
-  //   res.status(400).json({
-  //     errorMessage: 'Something went wrong!',
-  //     status: false
-  //   });
-  // }
+
 });
 
 /* Api to delete Product */
@@ -409,47 +382,7 @@ const sendEmail = async (to, subject, text, imagePath) => {
   }
 };
 
-// const fetchPrice = async (productUrl, desiredPrice,user_id) => {
-//   const spinner = ora("Loading....").start();
-//   try {
-//     const response = await axios.get(productUrl, {
-//       headers: {
-//         "User-Agent":
-//           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-//       },
-//     });
 
-//     const $ = cheerio.load(response.data);
-
-//     let name = $("title").text().substr(0, 80);
-//     let gotThePrice = $(".a-price-whole").first().text();
-//     let image = $("#landingImage").attr("src");
-//     if (!gotThePrice) {
-//       spinner.fail("Price not found on the page.");
-//       return null;
-//     }
-
-//     const price = Number(gotThePrice.replace(/[^\d.]/g, ""));
-//     spinner.succeed(`Fetched price for ${name}: ${price}`);
-//     if (price <= desiredPrice) {
-//       const emailText = `${name} is now available for ${price}. Desired price: ${desiredPrice}`;
-//       user.find({ _id: user_id }, async(err, data) => {
-//         console.log(data)
-//         if (data.length > 0) {
-//           await  sendEmail(data[0].username, "Price Alert", emailText);
-//         }
-        
-//       })
-//     //  sendEmail("dharhacks@gmail.com", "Price Alert", emailText);
-//     }
-
-//     return { name, price,image };
-//   } catch (error) {
-//     spinner.fail("Error fetching product price.");
-//     console.error("Error fetching product price:", error);
-//     return null;
-//   }
-// };
 const fetchPrice = async (productUrl, desiredPrice, user_id) => {
   const spinner = ora("Loading....").start();
 
