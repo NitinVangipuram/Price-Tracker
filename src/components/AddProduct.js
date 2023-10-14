@@ -1,11 +1,45 @@
 import React, { useState } from 'react';
-
+import '../Dashboard.css';
 import Swal from "sweetalert2";
-
-const AddProduct = ({ onAddProduct }) => {
- 
+import axios from 'axios';
+const AddProduct = () => {
+  const [products, setProducts] = useState([]);
+  const [productData, setProductData] = useState({});
   const [productUrl, setProductUrl] = useState('');
   const [desiredPrice, setDesiredPrice] = useState('');
+  const onAddProduct = async (product) => {
+    try { 
+      const response = await axios.post("http://localhost:2000/productData", {
+      
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(product),
+      });
+console.log(product);
+      if (!response.ok) {
+        throw new Error("Failed to send product data.");
+      }
+
+      const data = await response.json();
+
+      if (data) {
+        setProductData({ ...productData, [product.productUrl]: data, });
+        setProducts([...products, product]);
+        // fetch(API_Url, {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   body: JSON.stringify(data),
+        // })
+        
+      }
+    } catch (error) {
+      console.error("Error sending product data:", error);
+    }
+  };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();

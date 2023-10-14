@@ -4,7 +4,7 @@ import React from 'react';
 import Swal from 'sweetalert2';
 // import Card from 'react-bootstrap/Card';
 import './ProductList.css';
-function ProductList({ products, productData, setProductData }) {
+function ProductList({ row }) {
   const API_Url ='http://localhost:3500/products';
   const deleteProduct = (id) => {
     Swal.fire({

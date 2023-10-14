@@ -1,3 +1,78 @@
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+
+}
+
+
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-weight: bold;
+}
+
+.col .left{
+  text-align: left;
+ } 
+
+
+.todo-btn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 0.55rem;
+  cursor: pointer;
+  width: auto;
+  
+}
+
+/* ul {
+  list-style: none;
+  padding: 0;
+} */
+
+.imp{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.todo-input {
+  outline: none;
+  background: none;
+  border: 1px solid black;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  
+  width: 300px;
+  color: black;
+}
+.todo-input::placeholder {
+  color: black;
+}
+image{
+  width: 200px;
+  height: 150px;
+}
 * {
     box-sizing: border-box;
   }
@@ -17,6 +92,7 @@
     max-width: 100%;
     vertical-align: middle;
     border-radius: 4px;
+    height: 150px;
   }
   
   a {
@@ -32,9 +108,6 @@
   background-color: white;
   color: black;
 }
-.log-out{
-  margin-left: 10px;
-}
 .log-out:hover{
   background-color: black;
   color: white;}
@@ -46,11 +119,29 @@
   background-color: black;
   color: white;
 }
-
+.main-div{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-around;
+  top: 0;
+  margin-top: 0;
+}
+.right-div{
+  display: flex;
+  justify-content: flex-start;
+  top: 0;
+  margin-top: 0;
+}
 .left-div{
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  padding: 10px;
+  justify-content: right;
+  gap: 10px;
+  width: 500px;
+}
+.top-nav{
+  float: right;
 }
   ul {
     padding: 0;
@@ -196,7 +287,7 @@
   .close:hover {
     fill: #f58551;
   }
-
+  
   /* --- SUMMARY --- */
   .promotion, .summary, .checkout {
     float: left;
