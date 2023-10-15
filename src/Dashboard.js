@@ -239,7 +239,7 @@ class Dashboard extends Component {
         
         <div className='left-div'>
         <button
-            className="todo-btn add"
+            className="button-40 add"
             variant="contained"
             size="small"
             onClick={this.handleProductOpen}
@@ -247,7 +247,7 @@ class Dashboard extends Component {
             Add Product
           </button>
           <button
-            className="todo-btn log-out"
+            className="button-40 log-out"
             variant="contained"
             size="small"
             onClick={this.logOut}
@@ -274,7 +274,7 @@ class Dashboard extends Component {
               type="url"
               autoComplete="off"
               name="name"
-              className='todo-input'
+              className='todo-input pop'
               value={this.state.name}
               onChange={this.onChange}
               placeholder="ENTER URL"
@@ -285,7 +285,7 @@ class Dashboard extends Component {
               type="number"
               autoComplete="off"
               name="price"
-              className='todo-input'
+              className='todo-input pop'
               value={this.state.price}
               onChange={this.onChange}
               placeholder="Desired Price"
@@ -311,7 +311,7 @@ class Dashboard extends Component {
 
         <div className="product-list">
             <header className="container">
-            <h1>Shopping Cart</h1>
+            <h1>Your Cart</h1>
             
            <ul className="breadcrumb">
         <li>Your Items</li>
@@ -336,12 +336,12 @@ class Dashboard extends Component {
                     <a href="/">{data.name.slice(0,15)}</a>
                   </div>
                   <div className="description">{data.name}</div>
-                  <div className="price">{data.price}</div>
+                  <div className="price"> <span className='pr'> Price : </span><span>&#8377;</span>{data.price}</div>
                 </div>
               </div>
               <div className="col right">
               <button
-                      className="todo-btn"
+                      className="button-24"
                       variant="outlined"
                       color="secondary"
                       size="small"

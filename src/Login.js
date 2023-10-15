@@ -41,13 +41,14 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div style={{ marginTop: '200px' }}>
+      <div >
         <div>
         
         </div>
-        <label className="custom-field two log">
+        
+       
+        <div className="log">
         <h2>Login</h2>
-        <div>
           <input
             // id="standard-basic"
             type="text"
@@ -59,7 +60,7 @@ class Login extends React.Component {
             placeholder="User Name"
             required
           />
-          <br />
+        
           <input
             // id="standard-basic"
             type="password"
@@ -71,18 +72,18 @@ class Login extends React.Component {
             placeholder="Password"
             required
           />
-          <br />
-          <br />
+       
+        
           <button
-            className="todo-btn"
+            
             variant="contained"
-            color="primary"
+            className="button-40"
             size="small"
             disabled={this.state.username == '' && this.state.password == ''}
             onClick={this.login}
           >
             Login
-          </button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </button> 
           
           <Link
             // href="/register"
@@ -95,7 +96,7 @@ class Login extends React.Component {
             Register
           </Link>
         </div>
-        </label>
+      
       </div>
     );
   }

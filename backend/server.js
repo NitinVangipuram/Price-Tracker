@@ -7,6 +7,8 @@ const ora = require("ora");
 var multer = require('multer'),
   bodyParser = require('body-parser'),
   path = require('path');
+  require('dotenv').config();
+
 var mongoose = require("mongoose");
 mongoose.connect('mongodb+srv://dharhacks:KfYYaWCNDC7ZCqaF@cluster0.kwhiyso.mongodb.net/trackerDB');
 var fs = require('fs');
@@ -362,7 +364,7 @@ const transporter = nodemailer.createTransport({
   secure: false, // Set to true if your SMTP service requires a secure connection
   auth: {
     user: "dharhacks@gmail.com",
-    pass: "szklzuvvdoebwtjq",
+    pass: process.env.APP_PASSWORD,
   },
 });
 
@@ -484,7 +486,7 @@ cron.schedule("*/1 * * * *", async () => {
                     console.error("Error finding user:", err);
                   } else {
                     if (Array.isArray(data) && data.length > 0) {
-                      const emailText = `${name} is now available for ${newPrice}. Desired price: ${desiredPrice} before it was around ${prev}`;
+                      const emailText = `${name} is now available for ${newPrice}. before it was around ${prev}`;
                       await sendEmail(data[0].username, "Price Alert", emailText);
                     }
                   }

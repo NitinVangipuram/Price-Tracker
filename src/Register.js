@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
 import { withRouter } from "./utils";
+import './Dashboard.css'
 const axios = require("axios");
 
 class Register extends React.Component {
@@ -40,7 +41,7 @@ class Register extends React.Component {
 
   render() {
     return (
-      <div style={{ marginTop: '200px' }}>
+      <div >
        
         <div className="log">
         <h2>Register</h2>
@@ -55,7 +56,7 @@ class Register extends React.Component {
             placeholder="User Name"
             required
           />
-       <br></br>
+       
           <input
             id="standard-basic"
             className="todo-input"
@@ -67,7 +68,7 @@ class Register extends React.Component {
             placeholder="Password"
             required
           />
-          <br />
+         
           <input
             id="standard-basic"
             className="todo-input"
@@ -79,22 +80,23 @@ class Register extends React.Component {
             placeholder="Confirm Password"
             required
           />
-          <br /><br />
          
-          <Button
-            className="button_style"
+         
+          <button
+            className="button-40"
             variant="contained"
-            color="primary"
+            // color="primary"
             size="small"
             disabled={this.state.username == '' && this.state.password == ''}
             onClick={this.register}
           >
             Register
-          </Button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <br /><br />
+          </button> 
+         
           <Link
             // href="/"
             component="button"
+           
             style={{ fontFamily: "inherit", fontSize: "inherit" }}
             onClick={() => {
               this.props.navigate("/");
