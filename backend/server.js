@@ -443,7 +443,7 @@ app.listen(2000, () => {
 cron.schedule("*/1 * * * *", async () => {
     try {
       const products = await product.find({ is_delete: false });
-      console.log(products);
+      // console.log(products);
       console.log("Checking prices...");
   
       // Loop through the products in dbData and check for updated prices
@@ -466,7 +466,7 @@ cron.schedule("*/1 * * * *", async () => {
             continue; // Skip this product if price not found
           }
           // Number(gotThePrice.replace(/[^\d.]/g, ""))
-          const newPrice =10;  // Replace with your logic to get the new price
+          const newPrice =Number(gotThePrice.replace(/[^\d.]/g, ""));  // Replace with your logic to get the new price
           console.log(`Fetched updated price for ${name}: ${newPrice}`);
   
           if (newPrice < products[i].price) {
