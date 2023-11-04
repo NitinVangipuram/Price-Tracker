@@ -3,7 +3,7 @@ import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
 import { withRouter } from "./utils";
 import './Dashboard.css'
-const axios = require("axios");
+import axios from "axios";
 
 class Register extends React.Component {
   constructor(props) {

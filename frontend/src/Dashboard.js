@@ -9,8 +9,8 @@ import {
 import { Pagination } from '@material-ui/lab';
 import swal from 'sweetalert';
 import { withRouter } from './utils';
+import axios from 'axios';
 
-const axios = require('axios');
 class Dashboard extends Component {
   constructor() {
     super();
