@@ -505,3 +505,10 @@ cron.schedule("*/1 * * * *", async () => {
     }
   });
   
+app.use(cors(
+  {
+    origin:[''],
+    methods:['GET','POST'],
+    credentials: true // enable set cookie
+  }
+));

@@ -2,12 +2,20 @@ import React, { Component } from "react";
 import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
 import { withRouter } from "./utils";
-
+import GoogleLoginButton from "./GoogleLoginButton";
+import Onboarding from "./Onboarding";
 import axios from "axios";
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
 
 class Login extends React.Component {
+  componentDidMount() {
+    document.body.classList.add('main-page');
+  }
+
+  componentWillUnmount() {
+    document.body.classList.remove('main-page');
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -41,17 +49,29 @@ class Login extends React.Component {
   }
 
   render() {
+    
     return (
-      <div >
-        <div>
-        
+    
+      <div className="login-container">
+<div className="login-form">
+      <div className="login-form-inner">
+        <div className="logo">
+          {/* Include SVG or Logo component here */}
+          
         </div>
-        
-       
-        <div className="log">
-        <h2>Login</h2>
-          <input
-            // id="standard-basic"
+        <h1>Login</h1>
+        <p className="body-text">Track Your Prices and get Notified!</p>
+
+        <GoogleLoginButton />
+
+        {/* <div className="sign-in-separator">
+        <span>or Sign in with Email</span>
+      </div> */}
+
+      <div className="login-form-group">
+        <label htmlFor="email">Email <span className="required-star">*</span></label>
+        <input
+             id="standard-basic"
             type="text"
             className="todo-input"
             autoComplete="off"
@@ -61,9 +81,11 @@ class Login extends React.Component {
             placeholder="User Name"
             required
           />
-        
-          <input
-            // id="standard-basic"
+      </div>
+      <div className="login-form-group">
+        <label htmlFor="pwd">Password <span className="required-star">*</span></label>
+             <input
+             id="standard-basic"
             type="password"
             className="todo-input"
             autoComplete="off"
@@ -73,20 +95,26 @@ class Login extends React.Component {
             placeholder="Password"
             required
           />
+      </div>
+
+      <div className="login-form-group single-row">
        
-        
-          <button
+
+      
+      </div>
+
+         <button
             
-            variant="contained"
-            className="button-40"
-            size="small"
-            disabled={this.state.username == '' && this.state.password == ''}
-            onClick={this.login}
-          >
-            Login
-          </button> 
-          
-          <Link
+                  variant="contained"
+                 className="rounded-button login-cta"
+                  size="small"
+                  disabled={this.state.username == '' && this.state.password == ''}
+                  onClick={this.login}
+                >
+                  Login
+                </button> 
+
+      <div className="register-div">Not registered yet?   <Link
             // href="/register"
             component="button"
             style={{ fontFamily: "inherit", fontSize: "inherit" }}
@@ -94,11 +122,14 @@ class Login extends React.Component {
               this.props.navigate("/register");
             }}
           >
-            Register
-          </Link>
-        </div>
-      
+           
+          Create an account?</Link></div>
+         
+    </div>
+    </div>
+    <Onboarding />
       </div>
+    
     );
   }
 }

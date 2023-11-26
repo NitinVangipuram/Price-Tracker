@@ -2,10 +2,19 @@ import React, { Component } from "react";
 import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
 import { withRouter } from "./utils";
-import './Dashboard.css'
+import './Login.css'
+import GoogleLoginButton from "./GoogleLoginButton";
+import Onboarding from "./Onboarding";
 import axios from "axios";
 
 class Register extends React.Component {
+  componentDidMount() {
+    document.body.classList.add('main-page');
+  }
+
+  componentWillUnmount() {
+    document.body.classList.remove('main-page');
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -41,11 +50,25 @@ class Register extends React.Component {
 
   render() {
     return (
-      <div >
-       
-        <div className="log">
-        <h2>Register</h2>
-          <input
+      <div className="login-container">
+<div className="login-form">
+      <div className="login-form-inner">
+        <div className="logo">
+          {/* Include SVG or Logo component here */}
+          
+        </div>
+        <h1>Register</h1>
+        <p className="body-text">Track Your Prices and get Notified !</p>
+
+        <GoogleLoginButton />
+
+        {/* <div className="sign-in-separator">
+        <span>or Sign in with Email</span>
+      </div> */}
+
+      <div className="login-form-group">
+        <label htmlFor="email">Email <span className="required-star">*</span></label>
+        <input
             id="standard-basic"
             className="todo-input"
             type="text"
@@ -56,8 +79,10 @@ class Register extends React.Component {
             placeholder="User Name"
             required
           />
-       
-          <input
+      </div>
+      <div className="login-form-group">
+        <label htmlFor="pwd">Password <span className="required-star">*</span></label>
+            <input
             id="standard-basic"
             className="todo-input"
             type="password"
@@ -69,7 +94,10 @@ class Register extends React.Component {
             required
           />
          
-          <input
+      </div>
+      <div className="login-form-group">
+        <label htmlFor="pwd">Confirm Password <span className="required-star">*</span></label>
+             <input
             id="standard-basic"
             className="todo-input"
             type="password"
@@ -81,9 +109,12 @@ class Register extends React.Component {
             required
           />
          
+      </div>
+    
+
          
-          <button
-            className="button-40"
+                     <button
+            className="rounded-button login-cta"
             variant="contained"
             // color="primary"
             size="small"
@@ -92,8 +123,9 @@ class Register extends React.Component {
           >
             Register
           </button> 
-         
-          <Link
+
+      <div className="register-div">Not registered yet?   
+      <Link
             // href="/"
             component="button"
            
@@ -102,10 +134,13 @@ class Register extends React.Component {
               this.props.navigate("/");
             }}
           >
-            Login
-          </Link>
-        </div>
+            Login</Link></div>
+         
+    </div>
+    </div>
+    <Onboarding />
       </div>
+
     );
   }
 }
