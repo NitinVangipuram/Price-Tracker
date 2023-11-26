@@ -20,6 +20,7 @@ body.main-page,
 body.register-page {
   background-color: var(--bodybg);
   font-family: "Raleway", sans-serif;
+  overflow-y: hidden;
 }
 .login-container {
   display: flex;
