@@ -3,7 +3,6 @@ import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
 import { withRouter } from "./utils";
 import GoogleLoginButton from "./GoogleLoginButton";
-import Onboarding from "./Onboarding";
 import axios from "axios";
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
@@ -127,7 +126,7 @@ class Login extends React.Component {
          
     </div>
     </div>
-    <Onboarding />
+ 
       </div>
     
     );

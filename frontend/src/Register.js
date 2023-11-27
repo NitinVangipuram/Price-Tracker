@@ -4,7 +4,7 @@ import { Button, TextField, Link } from "@material-ui/core";
 import { withRouter } from "./utils";
 import './Login.css'
 import GoogleLoginButton from "./GoogleLoginButton";
-import Onboarding from "./Onboarding";
+
 import axios from "axios";
 
 class Register extends React.Component {
@@ -138,7 +138,7 @@ class Register extends React.Component {
          
     </div>
     </div>
-    <Onboarding />
+ 
       </div>
 
     );

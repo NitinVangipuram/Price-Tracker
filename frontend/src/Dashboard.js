@@ -263,12 +263,14 @@ class Dashboard extends Component {
 
         {/* Add Product */}
         <Dialog
+          
           open={this.state.openProductModal}
           onClose={this.handleProductClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogContent>
+        <div className='popup'>
+          <DialogContent >
             <input
               id="standard-basic"
               type="url"
@@ -300,11 +302,12 @@ class Dashboard extends Component {
             <Button
               disabled={this.state.name == ''  || this.state.price == '' }
               className='todo-btn'
-              onClick={(e) => this.addProduct()} color="dark" autoFocus>
+              onClick={(e) => this.addProduct()}  >
               
               Add Product
             </Button>
           </DialogActions>
+          </div>
         </Dialog>
 
         <br />
