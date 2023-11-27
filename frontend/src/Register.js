@@ -6,7 +6,7 @@ import './Login.css'
 import GoogleLoginButton from "./GoogleLoginButton";
 
 import axios from "axios";
-
+const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 class Register extends React.Component {
   componentDidMount() {
     document.body.classList.add('main-page');
@@ -28,7 +28,7 @@ class Register extends React.Component {
 
   register = () => {
 
-    axios.post('http://localhost:2000/register', {
+    axios.post(`${API_ENDPOINT}register`, {
       username: this.state.username,
       password: this.state.password,
     }).then((res) => {
@@ -129,7 +129,7 @@ class Register extends React.Component {
             // href="/"
             component="button"
            
-            style={{ fontFamily: "inherit", fontSize: "inherit" }}
+            style={{ fontFamily: "inherit", fontSize: "inherit" ,color:"#FF4742"}}
             onClick={() => {
               this.props.navigate("/");
             }}

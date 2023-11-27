@@ -6,7 +6,7 @@ import GoogleLoginButton from "./GoogleLoginButton";
 import axios from "axios";
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
-
+const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 class Login extends React.Component {
   componentDidMount() {
     document.body.classList.add('main-page');
@@ -28,7 +28,7 @@ class Login extends React.Component {
   login = () => {
     const pwd = bcrypt.hashSync(this.state.password, salt);
 
-    axios.post('http://localhost:2000/login', {
+    axios.post(`${API_ENDPOINT}login`, {
       username: this.state.username,
       password: pwd,
     }).then((res) => {
@@ -116,7 +116,7 @@ class Login extends React.Component {
       <div className="register-div">Not registered yet?   <Link
             // href="/register"
             component="button"
-            style={{ fontFamily: "inherit", fontSize: "inherit" }}
+            style={{ fontFamily: "inherit", fontSize: "inherit",color:"#FF4742" }}
             onClick={() => {
               this.props.navigate("/register");
             }}

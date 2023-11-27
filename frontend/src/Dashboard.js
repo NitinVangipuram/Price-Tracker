@@ -10,8 +10,9 @@ import { Pagination } from '@material-ui/lab';
 import swal from 'sweetalert';
 import { withRouter } from './utils';
 import axios from 'axios';
-
+const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 class Dashboard extends Component {
+  
   constructor() {
     super();
     this.state = {
@@ -33,7 +34,7 @@ class Dashboard extends Component {
       loading: false
     };
   }
-
+  
   componentDidMount = () => {
     let token = localStorage.getItem('token');
     if (!token) {
@@ -47,6 +48,7 @@ class Dashboard extends Component {
   }
 
   getProduct = () => {
+   
     
     this.setState({ loading: true });
 
@@ -55,7 +57,7 @@ class Dashboard extends Component {
     if (this.state.search) {
       data = `${data}&search=${this.state.search}`;
     }
-    axios.get(`http://localhost:2000/get-product${data}`, {
+    axios.get(`${API_ENDPOINT}get-product${data}`, {
       headers: {
         'token': this.state.token
       }
@@ -72,7 +74,7 @@ class Dashboard extends Component {
   }
 
   deleteProduct = (id) => {
-    axios.post('http://localhost:2000/delete-product', {
+    axios.post(`${API_ENDPOINT}delete-product`, {
       id: id
     }, {
       headers: {
@@ -131,7 +133,7 @@ class Dashboard extends Component {
     };
 
     console.log(data);
-    axios.post('http://localhost:2000/add-product', data , {
+    axios.post(`${API_ENDPOINT}add-product`, data , {
       headers: {
         'content-type': 'application/json',
         'token': this.state.token
@@ -170,7 +172,7 @@ class Dashboard extends Component {
     // file.append('discount', this.state.discount);
     file.append('price', this.state.price);
 
-    axios.post('http://localhost:2000/update-product', file, {
+    axios.post(`${API_ENDPOINT}update-product`, file, {
       headers: {
         'content-type': 'multipart/form-data',
         'token': this.state.token
