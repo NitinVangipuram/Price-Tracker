@@ -4,6 +4,7 @@ import { Button, TextField, Link } from "@material-ui/core";
 import { withRouter } from "./utils";
 import './Login.css'
 import GoogleLoginButton from "./GoogleLoginButton";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import axios from "axios";
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
@@ -60,12 +61,14 @@ class Register extends React.Component {
         <h1>Register</h1>
         <p className="body-text">Track Your Prices and get Notified !</p>
 
-        <GoogleLoginButton />
+        <GoogleOAuthProvider clientId="878605208401-tvg8asmdh98jeukpnbhfd355v6p93dl6.apps.googleusercontent.com">
+          <GoogleLoginButton history={this.props.history} />
+        </GoogleOAuthProvider>
 
         {/* <div className="sign-in-separator">
         <span>or Sign in with Email</span>
       </div> */}
-
+      <div className="credential-login">
       <div className="login-form-group">
         <label htmlFor="email">Email <span className="required-star">*</span></label>
         <input
@@ -124,7 +127,7 @@ class Register extends React.Component {
             Register
           </button> 
 
-      <div className="register-div">Not registered yet?   
+      <div className="register-div">Already have an account?   
       <Link
             // href="/"
             component="button"
@@ -140,7 +143,7 @@ class Register extends React.Component {
     </div>
  
       </div>
-
+</div>
     );
   }
 }

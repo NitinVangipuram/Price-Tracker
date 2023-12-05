@@ -3,6 +3,7 @@ import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
 import { withRouter } from "./utils";
 import GoogleLoginButton from "./GoogleLoginButton";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import axios from "axios";
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
@@ -46,7 +47,12 @@ class Login extends React.Component {
       }
     });
   }
-
+  handlegoogle = () => {
+    // Replace "localhost:2000" with your actual localhost address
+    const redirectUrl = "http://localhost:2000/auth/google/callback";
+    // Perform the redirect
+    window.location.href = redirectUrl;
+  };
   render() {
     
     return (
@@ -60,13 +66,17 @@ class Login extends React.Component {
         </div>
         <h1>Login</h1>
         <p className="body-text">Track Your Prices and get Notified!</p>
-
-        <GoogleLoginButton />
+      
+        <GoogleOAuthProvider
+        className="google-login" 
+        clientId="878605208401-tvg8asmdh98jeukpnbhfd355v6p93dl6.apps.googleusercontent.com">
+          <GoogleLoginButton history={this.props.history} />
+        </GoogleOAuthProvider>
 
         {/* <div className="sign-in-separator">
         <span>or Sign in with Email</span>
       </div> */}
-
+      <div className="credential-login">
       <div className="login-form-group">
         <label htmlFor="email">Email <span className="required-star">*</span></label>
         <input
@@ -128,7 +138,7 @@ class Login extends React.Component {
     </div>
  
       </div>
-    
+      </div>
     );
   }
 }

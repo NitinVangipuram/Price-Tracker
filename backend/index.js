@@ -21,13 +21,21 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: false
 }));
 
-app.use("/", (req, res, next) => {
+app.use("/", async (req, res, next) => {
   try {
-    if (req.path == "/login" || req.path == "/register" || req.path == "/") {
+    if (req.path === "/login" || req.path === "/register" || req.path === "/" || req.path === "/google-login") {
       next();
     } else {
-      /* decode jwt token if authorized*/
-      jwt.verify(req.headers.token, 'shhhhh11111', function (err, decoded) {
+      const token = req.headers.token;
+      if (!token) {
+        return res.status(401).json({
+          errorMessage: 'Token not provided!',
+          status: false
+        });
+      }
+
+      try {
+        const decoded = jwt.verify(token, 'shhhhh11111');
         if (decoded && decoded.user) {
           req.user = decoded;
           next();
@@ -37,7 +45,12 @@ app.use("/", (req, res, next) => {
             status: false
           });
         }
-      })
+      } catch (err) {
+        return res.status(401).json({
+          errorMessage: 'Invalid token!',
+          status: false
+        });
+      }
     }
   } catch (e) {
     res.status(400).json({
@@ -45,7 +58,7 @@ app.use("/", (req, res, next) => {
       status: false
     });
   }
-})
+});
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -132,6 +145,59 @@ app.post("/register", (req, res) => {
     } else {
       res.status(400).json({
         errorMessage: 'Add proper parameter first!',
+        status: false
+      });
+    }
+  } catch (e) {
+    res.status(400).json({
+      errorMessage: 'Something went wrong!',
+      status: false
+    });
+  }
+});
+app.post("/google-login", async (req, res) => {
+  try {
+    console.log(req.body);
+    if (req.body && req.body.username && req.body.verified) {
+      const existingUser = await user.findOne({ username: req.body.username });
+
+      if (existingUser) {
+        // User exists, generate token if verified is true
+        if (req.body.verified) {
+          checkUserAndGenerateToken(existingUser, req, res);
+        } else {
+          res.status(400).json({
+            errorMessage: 'User is not verified!',
+            status: false
+          });
+        }
+      } else {
+        // User doesn't exist, create a new user if verified is true
+        if (req.body.verified) {
+          const newUser = new user({
+            username: req.body.username,
+            verified: req.body.verified
+          });
+
+          try {
+            const savedUser = await newUser.save();
+            checkUserAndGenerateToken(savedUser, req, res);
+          } catch (err) {
+            res.status(500).json({
+              errorMessage: 'Error creating a new user!',
+              status: false
+            });
+          }
+        } else {
+          res.status(400).json({
+            errorMessage: 'User not found and not verified!',
+            status: false
+          });
+        }
+      }
+    } else {
+      res.status(400).json({
+        errorMessage: 'Add proper parameters first!',
         status: false
       });
     }
