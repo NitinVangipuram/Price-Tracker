@@ -485,7 +485,7 @@ const fetchPrice = async (productUrl, desiredPrice, user_id) => {
       const data = await user.findOne({ _id: user_id });
 
       if (data) {
-        const emailText = `${name} is now available for ${price}. Desired price: ${desiredPrice}`;
+        const emailText = `${name} is now available for ${price}. Desired price: ${desiredPrice} . Check here ${productUrl}`;
         await sendEmail(data.username, "Price Alert", emailText);
       }
     }
@@ -552,7 +552,7 @@ cron.schedule("*/1 * * * *", async () => {
                     console.error("Error finding user:", err);
                   } else {
                     if (Array.isArray(data) && data.length > 0) {
-                      const emailText = `${name} is now available for ${newPrice}. before it was around ${prev}`;
+                      const emailText = `${name} is now available for ${newPrice}. before it was around ${prev}. Check out here ${productUrl}`;
                       await sendEmail(data[0].username, "Price Alert", emailText);
                     }
                   }
