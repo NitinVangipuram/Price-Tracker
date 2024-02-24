@@ -26,11 +26,11 @@ class Dashboard extends Component {
       discount: '',
       file: '',
       fileName: '',
-      page: 1,
+     
       search: '',
       products: [],
    
-      pages: 0,
+    
       loading: false
     };
   }
@@ -48,50 +48,40 @@ class Dashboard extends Component {
   }
 
   getProduct = () => {
-   
-    
     this.setState({ loading: true });
-
-    let data = '?';
-    data = `${data}page=${this.state.page}`;
-    if (this.state.search) {
-      data = `${data}&search=${this.state.search}`;
-    }
+  
+    let data = this.state.search ? `?search=${this.state.search}` : '';
+  
     axios.get(`${API_ENDPOINT}get-product${data}`, {
       headers: {
         'token': this.state.token
       }
     }).then((res) => {
-      this.setState({ loading: false, products: res.data.products, pages: res.data.pages });
+      this.setState({ loading: false, products: res.data.products });
     }).catch((err) => {
       swal({
         text: err.response.data.errorMessage,
         icon: "error",
         type: "error"
       });
-      this.setState({ loading: false, products: [], pages: 0 },()=>{});
+      this.setState({ loading: false, products: [] });
     });
   }
+  
 
   deleteProduct = (id) => {
-    axios.post(`${API_ENDPOINT}delete-product`, {
-      id: id
-    }, {
+    axios.post(`${API_ENDPOINT}delete-product`, { id: id }, {
       headers: {
         'Content-Type': 'application/json',
         'token': this.state.token
       }
     }).then((res) => {
-
       swal({
         text: res.data.title,
         icon: "success",
         type: "success"
       });
-
-      this.setState({ page: 1 }, () => {
-        this.pageChange(null, 1);
-      });
+      this.getProduct(); // Directly call getProduct without pagination reset
     }).catch((err) => {
       swal({
         text: err.response.data.errorMessage,
@@ -100,12 +90,8 @@ class Dashboard extends Component {
       });
     });
   }
+  
 
-  pageChange = (e, page) => {
-    this.setState({ page: page }, () => {
-      this.getProduct();
-    });
-  }
 
   logOut = () => {
     localStorage.setItem('token', null);
@@ -119,9 +105,9 @@ class Dashboard extends Component {
     }
     this.setState({ [e.target.name]: e.target.value }, () => { });
     if (e.target.name == 'search') {
-      this.setState({ page: 1 }, () => {
+    
         this.getProduct();
-      });
+
     }
   };
 
@@ -148,7 +134,7 @@ class Dashboard extends Component {
       });
 
       this.handleProductClose();
-      this.setState({ name: '', desc: '', discount: '', price: '', po:[],file: null, page: 1 }, () => {
+      this.setState({ name: '', desc: '', discount: '', price: '', po:[],file: null }, () => {
         this.getProduct();
       });
     }).catch((err) => {
@@ -324,7 +310,6 @@ class Dashboard extends Component {
 
       <span className="count"> </span>
     </header>
-            
               {this.state.products.map((data) => (
                 
           <section className='container'>
@@ -332,13 +317,13 @@ class Dashboard extends Component {
           <li  className="row" key={data.name}>
            <div className="col left">
                 <div className="thumbnail">
-                  <a href="/">
+                  <a href={data.productUrl} target="_blank" rel="noopener noreferrer">
                     <img src={data.image} alt={data.name} />
                   </a>
                 </div>
                 <div className="detail">
                   <div className="name">
-                    <a href="/">{data.name.slice(0,15)}</a>
+                    <a href={data.productUrl} target="_blank" rel="noopener noreferrer" >{data.name.slice(0,15)}</a>
                   </div>
                   <div className="description">{data.name}</div>
                   <div className="price"> <span className='pr'> Price : </span><span>&#8377;</span>{data.price}</div>

@@ -122,6 +122,7 @@ class Register extends React.Component {
             // color="primary"
             size="small"
             disabled={this.state.username == '' && this.state.password == ''}
+            style={{cursor:"pointer"}}
             onClick={this.register}
           >
             Register

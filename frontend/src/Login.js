@@ -118,6 +118,7 @@ class Login extends React.Component {
                  className="rounded-button login-cta"
                   size="small"
                   disabled={this.state.username == '' && this.state.password == ''}
+                  style={{cursor:"pointer"}}
                   onClick={this.login}
                 >
                   Login

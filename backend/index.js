@@ -369,35 +369,24 @@ app.get("/get-product", (req, res) => {
     });
     if (req.query && req.query.search) {
       query["$and"].push({
-        name: { $regex: req.query.search }
+        name: { $regex: req.query.search, $options: 'i' } // Added case-insensitive search
       });
     }
-    var perPage = 5;
-    var page = req.query.page || 1;
-    product.find(query, { date: 1, name: 1, id: 1, desc: 1, price: 1, discount: 1, image: 1 })
-      .skip((perPage * page) - perPage).limit(perPage)
+    // Removed pagination logic
+    product.find(query, { date: 1, name: 1, id: 1, desc: 1, price: 1, discount: 1, image: 1 ,productUrl:1})
       .then((data) => {
-        product.find(query).count()
-          .then((count) => {
-
-            if (data && data.length > 0) {
-              res.status(200).json({
-                status: true,
-                title: 'Product retrived.',
-                products: data,
-                current_page: page,
-                total: count,
-                pages: Math.ceil(count / perPage),
-              });
-            } else {
-              res.status(400).json({
-                errorMessage: 'There is no product!',
-                status: false
-              });
-            }
-
+        if (data && data.length > 0) {
+          res.status(200).json({
+            status: true,
+            title: 'Product retrieved.',
+            products: data,
           });
-
+        } else {
+          res.status(400).json({
+            errorMessage: 'There is no product!',
+            status: false
+          });
+        }
       }).catch(err => {
         res.status(400).json({
           errorMessage: err.message || err,
@@ -410,7 +399,6 @@ app.get("/get-product", (req, res) => {
       status: false
     });
   }
-
 });
 
 
