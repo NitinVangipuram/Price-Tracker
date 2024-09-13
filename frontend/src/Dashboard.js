@@ -209,7 +209,7 @@ const Dashboard = () => {
                       <a href={data.productUrl} target="_blank" rel="noopener noreferrer">{data.name.slice(0, 15)}</a>
                     </div>
                     <div className="description">{data.name}</div>
-                    <div className="price"><span className='pr'> Price : </span><span>&#8377;</span>{data.price}</div>
+                    <div className="price"><span className='pr'> Lowest Price : </span><span>&#8377;</span>{data.price}</div>
                   </div>
                 </div>
                 <div className="col right">
