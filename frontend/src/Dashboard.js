@@ -1,79 +1,58 @@
-
-import React, { Component } from 'react';
-import './Dashboard.css'
+import React, { useState, useEffect } from 'react';
+import './Dashboard.css';
 import {
-  Button, TextField, Dialog, DialogActions, LinearProgress,
-  DialogTitle, DialogContent, TableBody, Table,
-  TableContainer, TableHead, TableRow, TableCell
+  Button, Dialog, DialogActions, LinearProgress,
+  DialogContent
 } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
 import swal from 'sweetalert';
-import { withRouter } from './utils';
+import { useNavigate } from 'react-router-dom'; // useNavigate instead of withRouter
 import axios from 'axios';
-const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
-class Dashboard extends Component {
-  
-  constructor() {
-    super();
-    this.state = {
-      token: '',
-      openProductModal: false,
-      openProductEditModal: false,
-      id: '',
-      name: '',
-      desc: '',
-      price: '',
-      discount: '',
-      file: '',
-      fileName: '',
-     
-      search: '',
-      products: [],
-   
-    
-      loading: false
-    };
-  }
-  
-  componentDidMount = () => {
-    let token = localStorage.getItem('token');
-    if (!token) {
-      // this.props.history.push('/login');
-      this.props.navigate("/login");
-    } else {
-      this.setState({ token: token }, () => {
-        this.getProduct();
-      });
-    }
-  }
 
-  getProduct = () => {
-    this.setState({ loading: true });
-  
-    let data = this.state.search ? `?search=${this.state.search}` : '';
-  
-    axios.get(`${API_ENDPOINT}get-product${data}`, {
-      headers: {
-        'token': this.state.token
-      }
+const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+
+const Dashboard = () => {
+  const [token, setToken] = useState('');
+  const [openProductModal, setOpenProductModal] = useState(false);
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate(); // useNavigate hook for navigation
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate("/login");
+    } else {
+      setToken(token);
+      getProduct(token);
+    }
+  }, [navigate]);
+
+  const getProduct = (token) => {
+    setLoading(true);
+    axios.get(`${API_ENDPOINT}get-product`, {
+      headers: { token }
     }).then((res) => {
-      this.setState({ loading: false, products: res.data.products });
+      setLoading(false);
+      setProducts(res.data.products);
     }).catch((err) => {
       swal({
         text: err.response.data.errorMessage,
         icon: "error",
         type: "error"
       });
-      this.setState({ loading: false, products: [] });
+      setLoading(false);
+      setProducts([]);
     });
-  }
-  
+  };
 
-  deleteProduct = (id) => {
-    axios.post(`${API_ENDPOINT}delete-product`, { id: id }, {
+  const deleteProduct = (id) => {
+    axios.post(`${API_ENDPOINT}delete-product`, { id }, {
       headers: {
         'Content-Type': 'application/json',
-        'token': this.state.token
+        'token': token
       }
     }).then((res) => {
       swal({
@@ -81,7 +60,7 @@ class Dashboard extends Component {
         icon: "success",
         type: "success"
       });
-      this.getProduct(); // Directly call getProduct without pagination reset
+      getProduct(token);
     }).catch((err) => {
       swal({
         text: err.response.data.errorMessage,
@@ -89,184 +68,90 @@ class Dashboard extends Component {
         type: "error"
       });
     });
-  }
-  
-
-
-  logOut = () => {
-    localStorage.setItem('token', null);
-    // this.props.history.push('/');
-    this.props.navigate("/");
-  }
-
-  onChange = (e) => {
-    if (e.target.files && e.target.files[0] && e.target.files[0].name) {
-      this.setState({ fileName: e.target.files[0].name }, () => { });
-    }
-    this.setState({ [e.target.name]: e.target.value }, () => { });
-    if (e.target.name == 'search') {
-    
-        this.getProduct();
-
-    }
   };
 
-  addProduct = () => {
-    const data = {
-      name: this.state.name,
-      price: this.state.price,
-      // Add more key-value pairs as needed
-    };
+  const logOut = () => {
+    localStorage.setItem('token', null);
+    navigate("/");
+  };
 
-    console.log(data);
-    axios.post(`${API_ENDPOINT}add-product`, data , {
+  const onChangeName = (e) => setName(e.target.value);
+  const onChangePrice = (e) => setPrice(e.target.value);
+
+  const addProduct = () => {
+    const data = { name, price };
+
+    axios.post(`${API_ENDPOINT}add-product`, data, {
       headers: {
         'content-type': 'application/json',
-        'token': this.state.token
+        'token': token
       }
-
     }).then((res) => {
-
       swal({
         text: res.data.title,
         icon: "success",
         type: "success"
       });
-
-      this.handleProductClose();
-      this.setState({ name: '', desc: '', discount: '', price: '', po:[],file: null }, () => {
-        this.getProduct();
-      });
+      handleProductClose();
+      setName('');
+      setPrice('');
+      getProduct(token);
     }).catch((err) => {
       swal({
         text: err.response.data.errorMessage,
         icon: "error",
         type: "error"
       });
-      this.handleProductClose();
-    });
-
-  }
-
-  updateProduct = () => {
-    // const fileInput = document.querySelector("#fileInput");
-    const file = new FormData();
-    file.append('id', this.state.id);
-    // file.append('file', fileInput.files[0]);
-    file.append('name', this.state.name);
-    // file.append('desc', this.state.desc);
-    // file.append('discount', this.state.discount);
-    file.append('price', this.state.price);
-
-    axios.post(`${API_ENDPOINT}update-product`, file, {
-      headers: {
-        'content-type': 'multipart/form-data',
-        'token': this.state.token
-      }
-    }).then((res) => {
-
-      swal({
-        text: res.data.title,
-        icon: "success",
-        type: "success"
-      });
-
-      this.handleProductEditClose();
-      this.setState({ name: '', desc: '', discount: '', price: '', file: null }, () => {
-        this.getProduct();
-      });
-    }).catch((err) => {
-      swal({
-        text: err.response.data.errorMessage,
-        icon: "error",
-        type: "error"
-      });
-      this.handleProductEditClose();
-    });
-
-  }
-
-  handleProductOpen = () => {
-    this.setState({
-      openProductModal: true,
-      id: '',
-      name: '',
-      desc: '',
-      price: '',
-      discount: '',
-      fileName: ''
+      handleProductClose();
     });
   };
 
-  handleProductClose = () => {
-    this.setState({ openProductModal: false });
-  };
+  const handleProductOpen = () => setOpenProductModal(true);
+  const handleProductClose = () => setOpenProductModal(false);
 
-  handleProductEditOpen = (data) => {
-    this.setState({
-      openProductEditModal: true,
-      id: data._id,
-      name: data.name,
-      desc: data.desc,
-      price: data.price,
-      discount: data.discount,
-      fileName: data.image
-    });
-  };
-
-  handleProductEditClose = () => {
-    this.setState({ openProductEditModal: false });
-  };
-
-  render() {
-    return (
+  return (
+    <div>
+      {loading && <LinearProgress size={40} />}
       <div>
-        {this.state.loading && <LinearProgress size={40} />}
-        <div>
         <div className='top-nav'>
-        
-        <div className='left-div'>
-        <button
-            className="button-40 add"
-            variant="contained"
-            size="small"
-            onClick={this.handleProductOpen}
-          >
-            Add Product
-          </button>
-          <button
-            className="button-40 log-out"
-            variant="contained"
-            size="small"
-            onClick={this.logOut}
-          >
-            Log Out
-          </button>
+          <div className='left-div'>
+            <button
+              className="button-40 add"
+              variant="contained"
+              size="small"
+              onClick={handleProductOpen}
+            >
+              Add Product
+            </button>
+            <button
+              className="button-40 log-out"
+              variant="contained"
+              size="small"
+              onClick={logOut}
+            >
+              Log Out
+            </button>
+          </div>
         </div>
-        
-        </div>
-         
-       
-        </div>
+      </div>
 
-        {/* Add Product */}
-        <Dialog
-          
-          open={this.state.openProductModal}
-          onClose={this.handleProductClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
+      {/* Add Product */}
+      <Dialog
+        open={openProductModal}
+        onClose={handleProductClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
         <div className='popup'>
-          <DialogContent >
+          <DialogContent>
             <input
               id="standard-basic"
               type="url"
               autoComplete="off"
               name="name"
               className='todo-input pop'
-              value={this.state.name}
-              onChange={this.onChange}
+              value={name}
+              onChange={onChangeName}
               placeholder="ENTER URL"
               required
             /><br />
@@ -276,83 +161,76 @@ class Dashboard extends Component {
               autoComplete="off"
               name="price"
               className='todo-input pop'
-              value={this.state.price}
-              onChange={this.onChange}
+              value={price}
+              onChange={onChangePrice}
               placeholder="Desired Price"
               required
             /><br />
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={this.handleProductClose} color="dark">
+            <Button onClick={handleProductClose} color="dark">
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == ''  || this.state.price == '' }
+              disabled={name === '' || price === ''}
               className='todo-btn'
-              onClick={(e) => this.addProduct()}  >
-              
+              onClick={addProduct}
+            >
               Add Product
             </Button>
           </DialogActions>
-          </div>
-        </Dialog>
-
-        <br />
-
-        <div className="product-list">
-            <header className="container">
-            <h1>Your Cart</h1>
-            
-           <ul className="breadcrumb">
-        <li>Your Items</li>
-      </ul>
-
-      <span className="count"> </span>
-    </header>
-              {this.state.products.map((data) => (
-                
-          <section className='container'>
-          <ul className="products">
-          <li  className="row" key={data.name}>
-           <div className="col left">
-                <div className="thumbnail">
-                  <a href={data.productUrl} target="_blank" rel="noopener noreferrer">
-                    <img src={data.image} alt={data.name} />
-                  </a>
-                </div>
-                <div className="detail">
-                  <div className="name">
-                    <a href={data.productUrl} target="_blank" rel="noopener noreferrer" >{data.name.slice(0,15)}</a>
-                  </div>
-                  <div className="description">{data.name}</div>
-                  <div className="price"> <span className='pr'> Price : </span><span>&#8377;</span>{data.price}</div>
-                </div>
-              </div>
-              <div className="col right">
-              <button
-                      className="button-24"
-                      variant="outlined"
-                      color="secondary"
-                      size="small"
-                      onClick={(e) => this.deleteProduct(data._id)}
-                    >
-                      Delete
-                  </button>
-              </div>
-             
-          </li>
-          </ul>
-          </section>
-
-              ))}
-        
-          <br />
         </div>
+      </Dialog>
 
+      <br />
+
+      <div className="product-list">
+        <header className="container">
+          <h1>Your Cart</h1>
+          <ul className="breadcrumb">
+            <li>Your Items</li>
+          </ul>
+          <span className="count"></span>
+        </header>
+
+        {products.map((data) => (
+          <section className='container' key={data._id}>
+            <ul className="products">
+              <li className="row">
+                <div className="col left">
+                  <div className="thumbnail">
+                    <a href={data.productUrl} target="_blank" rel="noopener noreferrer">
+                      <img src={data.image} alt={data.name} />
+                    </a>
+                  </div>
+                  <div className="detail">
+                    <div className="name">
+                      <a href={data.productUrl} target="_blank" rel="noopener noreferrer">{data.name.slice(0, 15)}</a>
+                    </div>
+                    <div className="description">{data.name}</div>
+                    <div className="price"><span className='pr'> Price : </span><span>&#8377;</span>{data.price}</div>
+                  </div>
+                </div>
+                <div className="col right">
+                  <button
+                    className="button-24"
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    onClick={() => deleteProduct(data._id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </section>
+        ))}
+        <br />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default withRouter(Dashboard);
+export default Dashboard;

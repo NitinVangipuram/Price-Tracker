@@ -1,42 +1,38 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import swal from "sweetalert";
-import { Button, TextField, Link } from "@material-ui/core";
-import { withRouter } from "./utils";
+import { Button, Link } from "@material-ui/core";
+import { useNavigate } from "react-router-dom"; // useNavigate instead of withRouter
 import GoogleLoginButton from "./GoogleLoginButton";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import axios from "axios";
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
-class Login extends React.Component {
-  componentDidMount() {
+
+const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // useNavigate hook for navigation
+
+  useEffect(() => {
     document.body.classList.add('main-page');
-  }
-
-  componentWillUnmount() {
-    document.body.classList.remove('main-page');
-  }
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: ''
+    return () => {
+      document.body.classList.remove('main-page');
     };
-  }
+  }, []);
 
-  onChange = (e) => this.setState({ [e.target.name]: e.target.value });
+  const onChangeUsername = (e) => setUsername(e.target.value);
+  const onChangePassword = (e) => setPassword(e.target.value);
 
-  login = () => {
-    const pwd = bcrypt.hashSync(this.state.password, salt);
-
+  const login = () => {
+    const pwd = bcrypt.hashSync(password, salt);
     axios.post(`${API_ENDPOINT}login`, {
-      username: this.state.username,
+      username: username,
       password: pwd,
     }).then((res) => {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user_id', res.data.id);
-      // this.props.history.push('/dashboard');
-      this.props.navigate("/dashboard");
+      navigate("/dashboard");
     }).catch((err) => {
       if (err.response && err.response.data && err.response.data.errorMessage) {
         swal({
@@ -46,102 +42,83 @@ class Login extends React.Component {
         });
       }
     });
-  }
-  handlegoogle = () => {
-    // Replace "localhost:2000" with your actual localhost address
-    const redirectUrl = "http://localhost:2000/auth/google/callback";
-    // Perform the redirect
-    window.location.href = redirectUrl;
   };
-  render() {
-    
-    return (
-    
-      <div className="login-container">
-<div className="login-form">
-      <div className="login-form-inner">
-        <div className="logo">
-          {/* Include SVG or Logo component here */}
+
+
+  return (
+    <div className="login-container">
+      <div className="login-form">
+        <div className="login-form-inner">
+          <div className="logo">
+            {/* Include SVG or Logo component here */}
+          </div>
+          <h1>Login</h1>
+          <p className="body-text">Track Your Prices and get Notified!</p>
           
-        </div>
-        <h1>Login</h1>
-        <p className="body-text">Track Your Prices and get Notified!</p>
-      
-        <GoogleOAuthProvider
-        className="google-login" 
-        clientId="878605208401-tvg8asmdh98jeukpnbhfd355v6p93dl6.apps.googleusercontent.com">
-          <GoogleLoginButton history={this.props.history} />
-        </GoogleOAuthProvider>
-
-        {/* <div className="sign-in-separator">
-        <span>or Sign in with Email</span>
-      </div> */}
-      <div className="credential-login">
-      <div className="login-form-group">
-        <label htmlFor="email">Email <span className="required-star">*</span></label>
-        <input
-             id="standard-basic"
-            type="text"
-            className="todo-input"
-            autoComplete="off"
-            name="username"
-            value={this.state.username}
-            onChange={this.onChange}
-            placeholder="User Name"
-            required
-          />
-      </div>
-      <div className="login-form-group">
-        <label htmlFor="pwd">Password <span className="required-star">*</span></label>
-             <input
-             id="standard-basic"
-            type="password"
-            className="todo-input"
-            autoComplete="off"
-            name="password"
-            value={this.state.password}
-            onChange={this.onChange}
-            placeholder="Password"
-            required
-          />
-      </div>
-
-      <div className="login-form-group single-row">
-       
-
-      
-      </div>
-
-         <button
-            
-                  variant="contained"
-                 className="rounded-button login-cta"
-                  size="small"
-                  disabled={this.state.username == '' && this.state.password == ''}
-                  style={{cursor:"pointer"}}
-                  onClick={this.login}
-                >
-                  Login
-                </button> 
-
-      <div className="register-div">Not registered yet?   <Link
-            // href="/register"
-            component="button"
-            style={{ fontFamily: "inherit", fontSize: "inherit",color:"#FF4742" }}
-            onClick={() => {
-              this.props.navigate("/register");
-            }}
+          <GoogleOAuthProvider
+            className="google-login"
+            clientId="878605208401-tvg8asmdh98jeukpnbhfd355v6p93dl6.apps.googleusercontent.com"
           >
-           
-          Create an account?</Link></div>
-         
-    </div>
-    </div>
- 
-      </div>
-      </div>
-    );
-  }
-}
+            <GoogleLoginButton />
+          </GoogleOAuthProvider>
 
-export default withRouter(Login);
+          <div className="credential-login">
+            <div className="login-form-group">
+              <label htmlFor="email">Email <span className="required-star">*</span></label>
+              <input
+                id="standard-basic"
+                type="text"
+                className="todo-input"
+                autoComplete="off"
+                name="username"
+                value={username}
+                onChange={onChangeUsername}
+                placeholder="User Name"
+                required
+              />
+            </div>
+
+            <div className="login-form-group">
+              <label htmlFor="pwd">Password <span className="required-star">*</span></label>
+              <input
+                id="standard-basic"
+                type="password"
+                className="todo-input"
+                autoComplete="off"
+                name="password"
+                value={password}
+                onChange={onChangePassword}
+                placeholder="Password"
+                required
+              />
+            </div>
+
+            <button
+              variant="contained"
+              className="rounded-button login-cta"
+              size="small"
+              disabled={username === '' || password === ''}
+              style={{ cursor: "pointer" }}
+              onClick={login}
+            >
+              Login
+            </button>
+
+            <div className="register-div">
+              Not registered yet?  
+              <Link
+                component="button"
+                style={{ fontFamily: "inherit", fontSize: "inherit", color: "#FF4742" }}
+                onClick={() => navigate("/register")}
+              >
+                Create an account?
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
