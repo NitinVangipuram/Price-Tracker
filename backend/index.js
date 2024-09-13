@@ -4,14 +4,11 @@ const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 const ora = require("ora");
-var multer = require('multer'),
-  bodyParser = require('body-parser'),
-  path = require('path');
-  require('dotenv').config();
-
+var bodyParser = require('body-parser');
+var path = require('path');
+require('dotenv').config();
 var mongoose = require("mongoose");
 mongoose.connect('mongodb+srv://dharhacks:KfYYaWCNDC7ZCqaF@cluster0.kwhiyso.mongodb.net/trackerDB');
-var fs = require('fs');
 var product = require("./model/product.js");
 var user = require("./model/user.js");
 app.use(cors());
@@ -23,42 +20,47 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.use("/", async (req, res, next) => {
   try {
-    if (req.path === "/login" || req.path === "/register" || req.path === "/" || req.path === "/google-login") {
-      next();
-    } else {
-      const token = req.headers.token;
-      if (!token) {
-        return res.status(401).json({
-          errorMessage: 'Token not provided!',
-          status: false
-        });
-      }
-
-      try {
-        const decoded = jwt.verify(token, 'shhhhh11111');
-        if (decoded && decoded.user) {
-          req.user = decoded;
-          next();
-        } else {
-          return res.status(401).json({
-            errorMessage: 'User unauthorized!',
-            status: false
-          });
-        }
-      } catch (err) {
-        return res.status(401).json({
-          errorMessage: 'Invalid token!',
-          status: false
-        });
-      }
+    const openPaths = ["/login", "/register", "/", "/google-login"];
+    if (openPaths.includes(req.path)) {
+      return next();
     }
+    // Check for token in headers
+    const token = req.headers.token;
+    if (!token) {
+      return res.status(401).json({
+        errorMessage: 'Token not provided!',
+        status: false
+      });
+    }
+
+    // Verify the token
+    try {
+      const decoded = jwt.verify(token, 'shhhhh11111');
+      if (decoded && decoded.user) {
+        req.user = decoded; 
+        return next();
+      } else {
+        return res.status(401).json({
+          errorMessage: 'User unauthorized!',
+          status: false
+        });
+      }
+    } catch (err) {
+      return res.status(401).json({
+        errorMessage: 'Invalid token!',
+        status: false
+      });
+    }
+
   } catch (e) {
-    res.status(400).json({
-      errorMessage: 'Something went wrong!',
+    // General error handler for unexpected errors
+    return res.status(500).json({
+      errorMessage: 'Internal server error!',
       status: false
     });
   }
 });
+
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -74,7 +76,7 @@ app.post("/login", (req, res) => {
       user.find({ username: req.body.username }, (err, data) => {
         if (data.length > 0) {
 
-          if (bcrypt.compareSync(data[0].password, req.body.password)) {
+          if (bcrypt.compare(data[0].password, req.body.password)) {
             checkUserAndGenerateToken(data[0], req, res);
           } else {
 
@@ -107,54 +109,64 @@ app.post("/login", (req, res) => {
 });
 
 /* register api */
+
+const saltRounds = 10; 
+
 app.post("/register", (req, res) => {
-  try {
-    if (req.body && req.body.username && req.body.password) {
+  const { username, password } = req.body;
 
-      user.find({ username: req.body.username }, (err, data) => {
+  if (!username || !password) {
+    return res.status(400).json({
+      errorMessage: 'Add proper parameter first!',
+      status: false
+    });
+  }
 
-        if (data.length == 0) {
+  user.findOne({ username }, (err, existingUser) => {
+    if (err) {
+      return res.status(500).json({
+        errorMessage: 'Something went wrong!',
+        status: false
+      });
+    }
 
-          let User = new user({
-            username: req.body.username,
-            password: req.body.password
-          });
-          User.save((err, data) => {
-            if (err) {
-              res.status(400).json({
-                errorMessage: err,
-                status: false
-              });
-            } else {
-              res.status(200).json({
-                status: true,
-                title: 'Registered Successfully.'
-              });
-            }
-          });
+    if (existingUser) {
+      return res.status(400).json({
+        errorMessage: `UserName ${username} Already Exists!`,
+        status: false
+      });
+    }
 
-        } else {
-          res.status(400).json({
-            errorMessage: `UserName ${req.body.username} Already Exist!`,
+    bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
+      if (err) {
+        return res.status(500).json({
+          errorMessage: 'Error hashing password!',
+          status: false
+        });
+      }
+
+      const newUser = new user({
+        username,
+        password: hashedPassword
+      });
+
+      newUser.save((err) => {
+        if (err) {
+          return res.status(400).json({
+            errorMessage: 'Error saving user!',
             status: false
           });
         }
 
+        res.status(200).json({
+          status: true,
+          title: 'Registered Successfully.'
+        });
       });
-
-    } else {
-      res.status(400).json({
-        errorMessage: 'Add proper parameter first!',
-        status: false
-      });
-    }
-  } catch (e) {
-    res.status(400).json({
-      errorMessage: 'Something went wrong!',
-      status: false
     });
-  }
+  });
 });
+
 app.post("/google-login", async (req, res) => {
   try {
     console.log(req.body);
@@ -302,13 +314,10 @@ app.post("/delete-product", (req, res) => {
 });
 app.get("/get-product", (req, res) => {
   try {
-    var query = {};
-    query["$and"] = [];
-    query["$and"].push({
+    var query = {
       is_delete: false,
       user_id: req.user.id
-    });
-    console.log(query);
+    };
     // Removed pagination logic
     product.find(query)
       .then((data) => {
@@ -344,9 +353,6 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const cron = require("node-cron");
 const nodemailer = require("nodemailer");
-
-
-
 
 
 const transporter = nodemailer.createTransport({
