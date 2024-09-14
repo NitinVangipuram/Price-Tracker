@@ -429,15 +429,14 @@ const fetchPrice = async (productUrl, desiredPrice, user_id) => {
   }
 };
 
-// Example usage
-// fetchPrice("https://example.com/product-page", 50, "user_id")
+
 
 app.listen(2000, () => {
   console.log("Server is Runing On port 2000");
 });
 
 
-cron.schedule("*/1 * * * *", async () => {
+cron.schedule("*/30 * * * *", async () => {
     try {
       const products = await product.find({ is_delete: false });
       // console.log(products);
