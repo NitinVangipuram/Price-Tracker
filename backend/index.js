@@ -13,8 +13,8 @@ var product = require("./model/product.js");
 var user = require("./model/user.js");
 app.use(cors());
 app.use(express.static('uploads'));
-app.use(bodyParser.json());       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+app.use(bodyParser.json());       
+app.use(bodyParser.urlencoded({     
   extended: false
 }));
 
@@ -356,9 +356,9 @@ const nodemailer = require("nodemailer");
 
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com", // Use your email service's SMTP host
-  port: 587, // Use the appropriate SMTP port
-  secure: false, // Set to true if your SMTP service requires a secure connection
+  host: "smtp.gmail.com", 
+  port: 587, 
+  secure: false, 
   auth: {
     user: "dharhacks@gmail.com",
     pass: process.env.APP_PASSWORD,
@@ -462,7 +462,7 @@ cron.schedule("*/30 * * * *", async () => {
             continue; // Skip this product if price not found
           }
           // Number(gotThePrice.replace(/[^\d.]/g, ""))
-          const newPrice =Number(gotThePrice.replace(/[^\d.]/g, ""));  // Replace with your logic to get the new price
+          const newPrice =Number(gotThePrice.replace(/[^\d.]/g, ""));  
           console.log(`Fetched updated price for ${name}: ${newPrice}`);
   
           if (newPrice < products[i].price) {
