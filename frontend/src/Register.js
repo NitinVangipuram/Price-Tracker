@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import swal from "sweetalert";
 import { Link } from "@material-ui/core";
 import { useNavigate } from 'react-router-dom';
@@ -43,7 +43,12 @@ const Register = () => {
       });
     });
   };
-
+  useEffect(() => {
+    document.body.classList.add('main-page');
+    return () => {
+      document.body.classList.remove('main-page');
+    };
+  }, []);
   return (
     <div className="login-container">
       <div className="login-form">
