@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import swal from "sweetalert";
-import { Button, Link } from "@material-ui/core";
-import { useNavigate } from "react-router-dom"; // useNavigate instead of withRouter
+import {  Link } from "@material-ui/core";
+import { useNavigate } from "react-router-dom"; 
 import GoogleLoginButton from "./GoogleLoginButton";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import axios from "axios";
@@ -12,14 +12,7 @@ const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // useNavigate hook for navigation
-
-  useEffect(() => {
-    document.body.classList.add('main-page');
-    return () => {
-      document.body.classList.remove('main-page');
-    };
-  }, []);
+  const navigate = useNavigate(); 
 
   const onChangeUsername = (e) => setUsername(e.target.value);
   const onChangePassword = (e) => setPassword(e.target.value);
@@ -49,9 +42,6 @@ const Login = () => {
     <div className="login-container">
       <div className="login-form">
         <div className="login-form-inner">
-          <div className="logo">
-            {/* Include SVG or Logo component here */}
-          </div>
           <h1>Login</h1>
           <p className="body-text">Track Your Prices and get Notified!</p>
           

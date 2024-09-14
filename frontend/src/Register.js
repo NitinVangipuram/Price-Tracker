@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import swal from "sweetalert";
 import { Link } from "@material-ui/core";
-import { useNavigate } from 'react-router-dom'; // For navigation
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import GoogleLoginButton from "./GoogleLoginButton";
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -13,14 +13,7 @@ const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const navigate = useNavigate(); // Replaces this.props.navigate
-
-  useEffect(() => {
-    document.body.classList.add('main-page');
-    return () => {
-      document.body.classList.remove('main-page');
-    };
-  }, []);
+  const navigate = useNavigate(); 
 
   const register = () => {
     if (password !== confirmPassword) {
@@ -55,9 +48,7 @@ const Register = () => {
     <div className="login-container">
       <div className="login-form">
         <div className="login-form-inner">
-          <div className="logo">
-            {/* Include SVG or Logo component here */}
-          </div>
+        
           <h1>Register</h1>
           <p className="body-text">Track Your Prices and get Notified!</p>
 

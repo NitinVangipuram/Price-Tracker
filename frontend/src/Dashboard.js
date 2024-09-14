@@ -5,7 +5,7 @@ import {
   DialogContent
 } from '@material-ui/core';
 import swal from 'sweetalert';
-import { useNavigate } from 'react-router-dom'; // useNavigate instead of withRouter
+import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
@@ -18,7 +18,7 @@ const Dashboard = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate(); // useNavigate hook for navigation
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const token = localStorage.getItem('token');
