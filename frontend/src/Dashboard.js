@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 import {
-  Button, Dialog, DialogActions, LinearProgress,
+Dialog, DialogActions, LinearProgress,
   DialogContent
 } from '@material-ui/core';
 import swal from 'sweetalert';
@@ -142,8 +142,8 @@ const Dashboard = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <div className='popup'>
-          <DialogContent>
+        <div className='popup' style={{marginTop:"0px"}}>
+          <DialogContent style={{display:"flex",flexDirection:"column"}}>
             <input
               id="standard-basic"
               type="url"
@@ -151,6 +151,7 @@ const Dashboard = () => {
               name="name"
               className='todo-input pop'
               value={name}
+              style={{borderRadius: "4px"}}
               onChange={onChangeName}
               placeholder="ENTER URL"
               required
@@ -162,23 +163,24 @@ const Dashboard = () => {
               name="price"
               className='todo-input pop'
               value={price}
+              style={{borderRadius: "4px"}}
               onChange={onChangePrice}
               placeholder="Desired Price"
               required
-            /><br />
+            />
           </DialogContent>
 
-          <DialogActions>
-            <Button onClick={handleProductClose} color="dark">
+          <DialogActions style={{justifyContent:"center",paddingLeft:"18px",paddingRight:"18px",paddingBottom:"16px"}}>
+            <button onClick={handleProductClose} className='button-40' >
               Cancel
-            </Button>
-            <Button
-              disabled={name === '' || price === ''}
-              className='todo-btn'
-              onClick={addProduct}
-            >
-              Add Product
-            </Button>
+            </button>
+            <button 
+  disabled={name === '' || price === ''} 
+  className='button-40' 
+  onClick={addProduct}
+>
+  Add Product
+</button>
           </DialogActions>
         </div>
       </Dialog>
