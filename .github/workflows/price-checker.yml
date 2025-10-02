@@ -24,16 +24,17 @@ jobs:
     - name: Cache node modules
       uses: actions/cache@v3
       with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        path: backend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('backend/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
     
     - name: Install dependencies
       run: npm install
+      working-directory: backend
     
     - name: Run price checker
-      run: node backend\price-checker.js
+      run: node backend/price-checker.js
       env:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
         EMAIL_USER: ${{ secrets.EMAIL_USER }}
