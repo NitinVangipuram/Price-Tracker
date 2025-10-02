@@ -1,0 +1,40 @@
+name: Price Tracker Cron
+
+on:
+  schedule:
+    # Runs every 12 hours (at 12 AM and 12 PM UTC)
+    # That's 5:30 AM and 5:30 PM IST
+    - cron: '0 */12 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  check-prices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Run price checker
+      run: node price-checker.js
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        EMAIL_USER: ${{ secrets.EMAIL_USER }}
+        APP_PASSWORD: ${{ secrets.APP_PASSWORD }}

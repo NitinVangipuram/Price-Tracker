@@ -351,7 +351,6 @@ app.get("/get-product", (req, res) => {
 
 const axios = require("axios");
 const cheerio = require("cheerio");
-const cron = require("node-cron");
 const nodemailer = require("nodemailer");
 
 
@@ -435,72 +434,7 @@ app.listen(2000, () => {
   console.log("Server is Runing On port 2000");
 });
 
-
-cron.schedule("*/30 * * * *", async () => {
-    try {
-      const products = await product.find({ is_delete: false });
-      // console.log(products);
-      console.log("Checking prices...");
-  
-      // Loop through the products in dbData and check for updated prices
-      for (let i = 0; i <products.length; i++) {
-        const { name, price, image, desiredPrice, productUrl, _id ,user_id} = products[i];
-        console.log(_id);
-        try {
-          const response = await axios.get(productUrl, {
-            headers: {
-              "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-            },
-          });
-  
-          const $ = cheerio.load(response.data);
-          let gotThePrice = $(".a-price-whole").first().text();
-  
-          if (!gotThePrice) {
-            console.log(`Price not found on ${name}`);
-            continue; // Skip this product if price not found
-          }
-          // Number(gotThePrice.replace(/[^\d.]/g, ""))
-          const newPrice =Number(gotThePrice.replace(/[^\d.]/g, ""));  
-          console.log(`Fetched updated price for ${name}: ${newPrice}`);
-  
-          if (newPrice < products[i].price) {
-            const user_id = products[i].user_id;
-            const prev = products[i].price;
-   
-                    product.updateOne({ _id: _id }, { price: newPrice }).maxTimeMS(30000)
-                    .then(result => {
-                      console.log(result);
-                    })
-                    .catch(err => {
-                      console.log(err);
-                    });
-
-                user.find({ _id: user_id }).maxTimeMS(30000).exec(async (err, data) => {
-                  if (err) {
-                    console.error("Error finding user:", err);
-                  } else {
-                    if (Array.isArray(data) && data.length > 0) {
-                      const emailText = `${name} is now available for ${newPrice}. before it was around ${prev}. Check out here ${productUrl}`;
-                      await sendEmail(data[0].username, "Price Alert", emailText);
-                    }
-                  }
-                });
-                
-            
-           
-           
-          }
-        } catch (error) {
-          console.error(`Error fetching product price for ${name}:`, error);
-        }
-      }
-    } catch (error) {
-      console.error("Error reading db.json:", error);
-    }
-  });
-  
+ 
 app.use(cors(
   {
     origin:[''],
